@@ -383,6 +383,29 @@ jar {
 3.java -jar jenkins.war
 wget https://get.jenkins.io/war/latest/jenkins.war
 
+                                            or
+
+1. wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add 
+ sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ >
+ /etc/apt/sources.list.d/jenkins.list'
+2.sudo apt update
+3.sudo apt install jenkins -y
+4.sudo systemctl start jenkins
+5.sudo systemctl enable jenkins
+6.sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+7.http://localhost:8080
+
+1.java -jar jenkins.war --httpPort=8080
+2.http://localhost:8080
+
+
+
+6.: Continuous Integration with Jenkins
+
+
+cd copy and paste intellij terminal path
+mvn test
+
 
 7.Ansible
 
@@ -445,6 +468,111 @@ wsl -install
    ansible-playbook -i host install_nginx.yml
     curl http://localhost
     ip addr
+
+    ----Experiment 7: Configuration Management with Ansible 
+Ansible Basics: 
+1. Inventory: 
+o Defines target hosts (INI or YAML format) 
+o Groups hosts logically (web_servers, db_servers) 
+o Can include host variables 
+2. Playbooks: 
+o YAML files defining automation tasks 
+o Structure: 
+▪ hosts: Target host group 
+▪ become: Use sudo privileges 
+▪ tasks: Actions to perform 
+▪ handlers: Special triggered tasks 
+3. Modules: 
+o Reusable units of automation 
+o Common modules: 
+▪ apt/yum: Package management 
+▪ copy: File transfer 
+▪ service: Service management 
+▪ file: File system operations 
+Practical Example: Apache Setup 
+1. Inventory (hosts.ini): 
+[web_servers] 
+server1.example.com 
+server2.example.com 
+2. Playbook (install_apache.yml): - name: Install and configure Apache 
+hosts: web_servers 
+become: yes 
+tasks: - name: Install Apache 
+apt: 
+name: apache2 
+state: present 
+update_cache: yes - name: Start Apache service 
+service: 
+name: apache2 
+state: started 
+enabled: yes - name: Deploy index.html 
+copy: 
+content: "<html><h1>Welcome</h1></html>" 
+dest: /var/www/html/index.html 
+3. Execution: 
+ansible-playbook -i hosts.ini install_apache.yml
+
+
+Experiment 8: Jenkins CI with Ansible Deployment 
+Integrated CI/CD Pipeline: 
+1. Jenkins Setup: 
+o Install required plugins (Maven, Ansible, Git) 
+o Configure global tools (JDK, Maven, Ansible) 
+o Set up credentials for target servers 
+2. Pipeline Configuration: 
+o Checkout code from Git repository 
+o Build Maven project (clean install) 
+o Archive generated artifact (JAR/WAR) 
+o Trigger Ansible playbook for deployment 
+3. Ansible Deployment Playbook: 
+o Copy artifact from Jenkins workspace to target servers 
+o Stop existing service 
+o Deploy new artifact 
+o Start service 
+o Verify deployment 
+Pipeline Example:  
+pipeline { 
+    agent any 
+    tools { 
+        maven 'Maven-3.8.6' 
+    } 
+    stages { 
+        stage('Checkout') { 
+            steps { 
+                git 'https://github.com/your/repo.git' 
+            } 
+        } 
+        stage('Build') { 
+            steps { 
+                sh 'mvn clean install' 
+            } 
+        } 
+        stage('Deploy') { 
+            steps { 
+                ansiblePlaybook( 
+                    playbook: 'deploy.yml', 
+                    inventory: 'inventory.ini', 
+                    credentialsId: 'ssh-key' 
+                ) 
+            } 
+        } 
+    } 
+} 
+Ansible Deployment Playbook (deploy.yml): - name: Deploy application 
+  hosts: app_servers 
+  become: yes 
+  tasks: 
+    - name: Copy artifact 
+copy: 
+src: "{{ workspace }}/target/myapp.jar" 
+dest: "/opt/myapp/myapp.jar" - name: Restart service 
+systemd: 
+name: myapp 
+state: restarted
+
+
+ cd %WORKSPACE%
+ mvn clean package
 
     
 
