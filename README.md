@@ -92,6 +92,9 @@ header img {
 </body>
 </html>
 
+
+
+
 ----Webpage test for Maven:org.test
 
 package org.test;
@@ -139,12 +142,13 @@ import org.openqa.selenium.WebDriver;
 1.git init
 2. git add .
 3. git commit -m "Initial commit"
-4. git remote add origin
+4. git remote add origin git repository 
+
 5. git push -u origin master https://github.com/NANDITHA-nan/DevOps-GRD
 6. mvn clean install
-7. git add docs/*
+7. git add .
 8.git commit -m "Deploy site to GitHub Pages"
-9. git push origin master 
+9. git push -u origin master 
 10. https://.github.io//
 
 
@@ -382,6 +386,7 @@ jar {
 2.cd /home/ewit - ise/Downloads
 3.java -jar jenkins.war
 wget https://get.jenkins.io/war/latest/jenkins.war
+cat
 
                                             or
 
